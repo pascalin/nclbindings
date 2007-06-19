@@ -2,9 +2,10 @@
 
 require 'ncl'
 
-class MyReader < ncl.NxsReader
+class MyReader < Ncl::NxsReader
+  attr_accessor :inf, :outf
   def initialize(infname, outfname)
-    super
+    super()
     @inf = File.open(infname, 'r')
     @outf = File.open(outfname, 'w')
   end
@@ -26,13 +27,13 @@ class MyReader < ncl.NxsReader
   end
 
   def NexusError(msg, pos, line, col)
-    #sys.stderr.write('\nError found at line %d, column %d (file position %d): %s' % (line, col, pos, msg))
+    STDERR << '\nError found at line #{line}, column #{col} (file position #{pos}): #{msg}'
     exit
   end
 
 end
 
-class MyToken < ncl.NxsToken
+class MyToken < Ncl::NxsToken
   def initialize(is, os)
     super(is)
     @out = os
@@ -42,10 +43,11 @@ class MyToken < ncl.NxsToken
     puts msg
     @out << msg+'\n'
   end
+end
 
 def main
-  taxa = ncl.NxsTaxaBlock.new
-  trees = ncl.NxsTreesBlock.new
+  taxa = Ncl::NxsTaxaBlock.new
+  trees = Ncl::NxsTreesBlock.new(taxa)
     
   nexus = MyReader.new(ARGV[0], ARGV[1])
   nexus.Add(taxa)
@@ -56,5 +58,7 @@ def main
 
   taxa.Report(nexus.outf)
   trees.Report(nexus.outf)
+end
 
 main()
+
