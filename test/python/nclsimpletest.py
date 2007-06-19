@@ -32,9 +32,9 @@ class MyReader(ncl.NxsReader):
 
 
 class MyToken(ncl.NxsToken):
-    def __init__(self, is, os):
-        ncl.NxsToken.__init__(self, is)
-        self.out = os
+    def __init__(self, ins, outs):
+        ncl.NxsToken.__init__(self, ins)
+        self.out = outs
 
     def OutputComment(msg):
         print msg
