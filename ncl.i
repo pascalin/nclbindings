@@ -23,21 +23,21 @@
 
 %module ncl
 %{
- %include nxsdefs.i
- %include nxsstring.i
- %include nxsexception.i
- %include nxstoken.i
- %include nxsblock.i
- %include nxsreader.i
- %include nxssetreader.i
- %include nxstaxablock.i
- %include nxstreesblock.i
- %include nxsdistancedatum.i
- %include nxsdistancesblock.i
- %include nxsdiscretedatum.i
- %include nxsdiscretematrix.i
- %include nxscharactersblock.i
- %include nxsassumptionsblock.i
- %include nxsdatablock.i
- %include nxsunalignedblock.i
+ #include "ncl.h"
 %}
+
+%include nxstoken.h
+%include nxsblock.h
+%include nxsreader.h
+//%include nxssetreader.h
+%include nxstaxablock.h
+%include nxstreesblock.h
+//%include nxsdistancedatum.h
+//%include nxsdistancesblock.h
+//%include nxsdiscretedatum.h
+//%include nxsdiscretematrix.h
+//%include nxscharactersblock.h
+//%include nxsassumptionsblock.h
+//%include nxsdatablock.h
+//%include nxsunalignedblock.h
+
