@@ -26,12 +26,38 @@
  #include "ncl.h"
 %}
 
-%include nxstoken.h
-%include nxsblock.h
+%include std_string.i
+//%include std_iostream.i
+
+#ifdef SWIGPYTHON
+
+%typemap(in) istream& {
+   if (!PyString_Check($input)) {
+      PyErr_SetString(PyExc_TypeError, "not a string");
+      return NULL;
+   }
+   $1 = new istringstream(string(PyString_AsString($input)));
+}
+
+// %typemap(in) ostream& {
+//    if (!PyString_Check($input)) {
+//       PyErr_SetString(PyExc_TypeError, "not a string");
+//       return NULL;
+//    }
+//    $1 = new ostringstream(string(PyString_AsString($input)));
+// }
+
+%feature("autodoc",0);
+
+#endif
+
+%include nxstoken.i
+%include nxsblock.i
 %include nxsreader.h
+%include nxstaxablock.i
+%include nxstreesblock.i
+//%include nxsstring.i
 //%include nxssetreader.h
-%include nxstaxablock.h
-%include nxstreesblock.h
 //%include nxsdistancedatum.h
 //%include nxsdistancesblock.h
 //%include nxsdiscretedatum.h
