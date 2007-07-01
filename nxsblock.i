@@ -20,7 +20,14 @@
 //
 
 
-%module ncl
-%{
- #include "nxsblock.h"
-%}
+%include nxsblock.h
+
+%extend NxsBlock
+{
+  std::string Report()
+    {
+      ostringstream output;
+      $self->Report(output);
+      return output.str();
+    }
+}
