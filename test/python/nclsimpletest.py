@@ -24,6 +24,7 @@ class MyReader(ncl.NxsReader):
 
     def OutputComment(msg):
         self.outf.write(msg)
+        pass
 
     def NexusError(msg, pos, line, col):
         sys.stderr.write('\nError found at line %d, column %d (file position %d): %s' %
@@ -33,7 +34,7 @@ class MyReader(ncl.NxsReader):
 
 class MyToken(ncl.NxsToken):
     def __init__(self, ins, outs):
-        ncl.NxsToken.__init__(self, ins)
+        ncl.NxsToken.__init__(self, ins.read())
         self.out = outs
 
     def OutputComment(msg):
@@ -41,6 +42,7 @@ class MyToken(ncl.NxsToken):
         self.out.write(msg+'\n')
 
 def main():
+
     taxa = ncl.NxsTaxaBlock()
     trees = ncl.NxsTreesBlock(taxa)
     
@@ -51,8 +53,9 @@ def main():
     token = MyToken(nexus.inf, nexus.outf)
     nexus.Execute(token)
 
-    taxa.Report(nexus.outf)
-    trees.Report(nexus.outf)
+    output = open(sys.argv[2], 'a')
+    output.write(taxa.Report())
+    output.write(trees.Report())
 
 if __name__ == '__main__':
     main()
