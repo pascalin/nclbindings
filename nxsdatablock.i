@@ -19,8 +19,14 @@
 //      59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
+%include nxsdatablock.h
 
-%module ncl
-%{
- #include "nxsdatablock.h"
-%}
+%extend NxsDataBlock
+{
+  std::string Report()
+    {
+      ostringstream output;
+      $self->Report(output);
+      return output.str();
+    }
+}

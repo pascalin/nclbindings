@@ -27,11 +27,20 @@
 %}
 
 %include std_string.i
+%include std_vector.i
 //%include std_iostream.i
+
+%apply std::string *INPUT {NxsString *};
+%apply std::string &INPUT {NxsString &};
+%apply std::string &OUTPUT {NxsString *};
+%apply std::string *OUTPUT {NxsString &};
+
+%template(NxsStringVector) std::vector<std::string>;
 
 #ifdef SWIGPYTHON
 
-%typemap(in) istream& {
+%typemap(in) istream&
+{
    if (!PyString_Check($input)) {
       PyErr_SetString(PyExc_TypeError, "not a string");
       return NULL;
@@ -47,23 +56,38 @@
 //    $1 = new ostringstream(string(PyString_AsString($input)));
 // }
 
+// %typemap(in) NxsString
+// {
+//    if (!PyString_Check($input)) {
+//       PyErr_SetString(PyExc_TypeError, "not a string");
+//       return NULL;
+//    }
+//    $1 = new NxsString(PyString_AsString($input));
+// }
+
+// %typemap(out) NxsString
+// {
+//    $result = PyString_FromString($1.c_str());
+// }
+
+//%typemap (out) NxsStringVector
+
 %feature("autodoc",0);
 
 #endif
 
 %include nxstoken.i
 %include nxsblock.i
-%include nxsreader.h
+%include nxsreader.i
 %include nxstaxablock.i
 %include nxstreesblock.i
+%include nxscharactersblock.i
+%include nxsassumptionsblock.i
+%include nxsdatablock.i
+%include nxsdistancesblock.h
 //%include nxsstring.i
 //%include nxssetreader.h
 //%include nxsdistancedatum.h
-//%include nxsdistancesblock.h
 //%include nxsdiscretedatum.h
 //%include nxsdiscretematrix.h
-//%include nxscharactersblock.h
-//%include nxsassumptionsblock.h
-//%include nxsdatablock.h
 //%include nxsunalignedblock.h
-
