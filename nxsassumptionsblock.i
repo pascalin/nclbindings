@@ -19,8 +19,31 @@
 //      59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
+%typemap(in, numinputs=0) NxsStringVector &names (NxsStringVector temp)
+{
+  $1 = &temp;
+}
 
-%module ncl
-%{
- #include "nxsassumptionsblock.h"
-%}
+%typemap(argout) NxsStringVector &names
+{
+  NxsStringVector::const_iterator i;
+  int index=0;
+  Py_DECREF($result);
+  $result = PyTuple_New($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      PyTuple_SetItem($result, index++, PyString_FromString(i->c_str()));
+    }
+}
+
+%include nxsassumptionsblock.h
+
+%extend NxsAssumptionsBlock
+{
+  std::string Report()
+    {
+      ostringstream output;
+      $self->Report(output);
+      return output.str();
+    }
+}

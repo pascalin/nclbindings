@@ -3,21 +3,21 @@ PYTHONDIR = /usr/include/python2.4
 
 CFLAGS = -fPIC -I$(NCLDIR) -I$(PYTHONDIR)
 
-INTERFACES = ncl.i nxsassumptionsblock.i nxsblock.i nxscharactersblock.i nxsdatablock.i nxsdefs.i nxsdiscretedatum.i nxsdiscretematrix.i nxsdistancedatum.i nxsdistancesblock.i nxsexception.i nxsindent.i nxsreader.i nxssetreader.i nxsstring.i nxstaxablock.i nxstoken.i nxstreesblock.i nxsunalignedblock.i
+INTERFACES = ncl.i nxstoken.i nxsstring.i nxsblock.i nxsreader.i nxsexception.i nxstaxablock.i nxstreesblock.i nxsassumptionsblock.i nxscharactersblock.i nxsdatablock.i nxsdistancesblock.i
 
-NCL_OBJECTS = nxstoken.o nxsstring.o nxsblock.o nxsreader.o nxsexception.o nxstaxablock.o nxstreesblock.o
+NCL_OBJECTS = nxstoken.o nxsstring.o nxsblock.o nxsreader.o nxsexception.o nxstaxablock.o nxstreesblock.o nxsassumptionsblock.o nxscharactersblock.o nxsdatablock.o nxsdiscretedatum.o nxsdiscretematrix.o nxssetreader.o nxsdistancesblock.o nxsdistancedatum.o
 
 _ncl.so: ncl_wrap.o
 	g++ -shared $(NCL_OBJECTS) ncl_wrap.o -o _ncl.so
 
-ncl_wrap.o: ncl_wrap.cxx $(NCL_OBJECTS)
-	g++ -c $(CFLAGS) ncl_wrap.cxx 
+ncl_wrap.o: ncl_wrap.cpp $(NCL_OBJECTS)
+	g++ -c $(CFLAGS) ncl_wrap.cpp 
 
-ncl_wrap.cxx: ncl.i
-	swig -I$(NCLDIR) -python -c++ ncl.i
+ncl_wrap.cpp: $(INTERFACES)
+	swig -I$(NCLDIR) -python -c++ -o ncl_wrap.cpp ncl.i
 
 %.o: ncl/%.cpp
 	g++ -c $(CFLAGS) $<
 
 clean:
-	rm -rf *.o ncl.py* ncl_wrap.cxx _ncl.so
+	rm -rf *.o ncl.py* ncl_wrap.cpp _ncl.so

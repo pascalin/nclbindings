@@ -19,8 +19,16 @@
 //      59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
+%ignore	NxsCharactersBlock::GetStateSymbolIndex;
 
-%module ncl
-%{
- #include "nxscharactersblock.h"
-%}
+%include nxscharactersblock.h
+
+%extend NxsCharactersBlock
+{
+  std::string Report()
+    {
+      ostringstream output;
+      $self->Report(output);
+      return output.str();
+    }
+}
