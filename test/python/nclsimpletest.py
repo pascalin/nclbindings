@@ -10,23 +10,22 @@ class MyReader(ncl.NxsReader):
         self.inf = open(infname, 'rb')
         self.outf = open(outfname, 'w')
 
-    def EnteringBlock(blockname):
+    def EnteringBlock(self, blockname):
         print 'Reading "%s" block...' % blockname
         self.outf.write('Reading "%s" block...\n' % blockname)
 
         return True
 
-    def SkippingBlock(blockname):
+    def SkippingBlock(self, blockname):
         print 'Skipping unknown block ("%s")...' % blockname
         self.outf.write('Skipping unknown block ("%s")...\n' % blockname)
 
         return True
 
-    def OutputComment(msg):
+    def OutputComment(self, msg):
         self.outf.write(msg)
-        pass
 
-    def NexusError(msg, pos, line, col):
+    def NexusError(self, msg, pos, line, col):
         sys.stderr.write('\nError found at line %d, column %d (file position %d): %s' %
                          (line, col, pos, msg))
         sys.exit(0)
@@ -37,7 +36,7 @@ class MyToken(ncl.NxsToken):
         ncl.NxsToken.__init__(self, ins.read())
         self.out = outs
 
-    def OutputComment(msg):
+    def OutputComment(self, msg):
         print msg
         self.out.write(msg+'\n')
 
