@@ -17,7 +17,7 @@ class MyReader(ncl.NxsReader):
         return True
 
     def SkippingBlock(self, blockname):
-        print 'Skipping unknown block ("%s")...' % blockname
+        print 'Skipping unknown block (%s)...' % blockname
         self.outf.write('Skipping unknown block (%s)...\n' % blockname)
 
         return True
