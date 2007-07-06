@@ -113,8 +113,8 @@
 %include nxsassumptionsblock.i
 %include nxsdatablock.i
 %include nxsdistancesblock.h
+%include nxssetreader.i
 //%include nxsstring.i
-//%include nxssetreader.h
 //%include nxsdistancedatum.h
 //%include nxsdiscretedatum.h
 //%include nxsdiscretematrix.h
