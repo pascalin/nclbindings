@@ -21,32 +21,49 @@
 //
 
 
-%module ncl
+%module(directors="1") ncl
 %{
  #include "ncl.h"
 %}
 
+%feature("director") NxsReader;
+%feature("director") NxsToken;
+%feature("director") NxsBlock;
+
+%feature("director:except") {
+    if ($error != NULL) {
+        throw Swig::DirectorMethodException();
+    }
+}
+
 %include std_string.i
 %include std_vector.i
-//%include std_iostream.i
+//%include std_set.i
 
-%apply std::string *INPUT {NxsString *};
-%apply std::string &INPUT {NxsString &};
-%apply std::string &OUTPUT {NxsString *};
-%apply std::string *OUTPUT {NxsString &};
+// %apply std::string *INPUT {NxsString *};
+// %apply std::string &INPUT {NxsString &};
+// %apply std::string *OUTPUT {NxsString *};
+// %apply std::string &OUTPUT {NxsString &};
 
 %template(NxsStringVector) std::vector<std::string>;
+//%template(NxsStringVector) std::vector<std::string>;
 
 #ifdef SWIGPYTHON
 
 %typemap(in) istream&
 {
-   if (!PyString_Check($input)) {
-      PyErr_SetString(PyExc_TypeError, "not a string");
-      return NULL;
-   }
+   if (!PyString_Check($input))
+     {
+       PyErr_SetString(PyExc_TypeError, "not a string");
+       return NULL;
+     }
    $1 = new istringstream(string(PyString_AsString($input)));
 }
+
+// %typemap(freearg) istream&
+// {
+//   delete $1;
+// }
 
 // %typemap(in) ostream& {
 //    if (!PyString_Check($input)) {
@@ -56,21 +73,32 @@
 //    $1 = new ostringstream(string(PyString_AsString($input)));
 // }
 
-// %typemap(in) NxsString
-// {
-//    if (!PyString_Check($input)) {
-//       PyErr_SetString(PyExc_TypeError, "not a string");
-//       return NULL;
-//    }
-//    $1 = new NxsString(PyString_AsString($input));
-// }
+%typemap(in) NxsString
+{
+   if (!PyString_Check($input)) {
+      PyErr_SetString(PyExc_TypeError, "not a string");
+      return NULL;
+   }
+   $1.clear();
+   $1.append(PyString_AsString($input));
+}
 
-// %typemap(out) NxsString
-// {
-//    $result = PyString_FromString($1.c_str());
-// }
+%typemap(out) NxsString
+{
+   $result = PyString_FromString($1.c_str());
+}
 
-//%typemap (out) NxsStringVector
+%typemap(directorin) NxsString
+{
+   $input = PyString_FromString($1_name.c_str());
+}
+
+%typemap(directorout) NxsString
+{
+   $result.clear();
+   $result.append(PyString_AsString($1));
+}
+
 
 %feature("autodoc",0);
 
