@@ -19,6 +19,8 @@
 //      59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
+#ifdef SWIGPYTHON
+
 %typemap(in, numinputs=0) NxsStringVector &names (NxsStringVector temp)
 {
   $1 = &temp;
@@ -35,6 +37,8 @@
       PyTuple_SetItem($result, index++, PyString_FromString(i->c_str()));
     }
 }
+
+#endif
 
 %include nxsassumptionsblock.h
 
