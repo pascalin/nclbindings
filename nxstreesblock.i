@@ -21,13 +21,3 @@
 
 
 %include nxstreesblock.h
-
-%extend NxsTreesBlock
-{
-  std::string Report()
-    {
-      ostringstream output;
-      $self->Report(output);
-      return output.str();
-    }
-}

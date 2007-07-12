@@ -21,14 +21,50 @@
 
 %ignore	NxsCharactersBlock::GetStateSymbolIndex;
 
-%include nxscharactersblock.h
+#if defined(SWIGPERL)
 
-%extend NxsCharactersBlock
+
+#elif defined(SWIGPYTHON)
+
+
+%typemap(in, numinputs=0) NxsUnsignedSet& (NxsUnsignedSet temp)
 {
-  std::string Report()
+  $1 = &temp;
+}
+
+%typemap(argout) NxsUnsignedSet&
+{
+  NxsUnsignedSet::const_iterator i;
+  int index=0;
+  Py_DECREF($result);
+  $result = PyTuple_New($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
     {
-      ostringstream output;
-      $self->Report(output);
-      return output.str();
+      PyTuple_SetItem($result, index++, PyInt_FromLong(*i));
     }
 }
+
+
+#elif defined(SWIGRUBY)
+
+
+%typemap(in, numinputs=0) NxsUnsignedSet& (NxsUnsignedSet temp)
+{
+  $1 = &temp;
+}
+
+%typemap(argout) NxsUnsignedSet&
+{
+  NxsUnsignedSet::const_iterator i;
+  VALUE arr = rb_ary_new2($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      rb_ary_push(arr, INT2FIX(*i));
+    }
+  $result = arr;
+}
+
+
+#endif
+
+%include nxscharactersblock.h

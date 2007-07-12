@@ -19,4 +19,26 @@
 //      59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
+#if defined(SWIGPERL)
+
+
+
+#elif defined(SWIGPYTHON)
+
+%typemap(in) istream&
+{
+   if (!PyString_Check($input))
+     {
+       PyErr_SetString(PyExc_TypeError, "not a string");
+       return NULL;
+     }
+   $1 = new istringstream(string(PyString_AsString($input)));
+}
+
+#elif defined(SWIGRUBY)
+
+
+
+#endif
+
 %include nxstoken.h

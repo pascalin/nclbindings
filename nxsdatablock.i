@@ -20,13 +20,3 @@
 //
 
 %include nxsdatablock.h
-
-%extend NxsDataBlock
-{
-  std::string Report()
-    {
-      ostringstream output;
-      $self->Report(output);
-      return output.str();
-    }
-}
