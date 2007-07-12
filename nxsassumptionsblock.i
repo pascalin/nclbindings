@@ -19,7 +19,10 @@
 //      59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
-#ifdef SWIGPYTHON
+#if defined(SWIGPERL)
+
+#elif defined(SWIGPYTHON)
+
 
 %typemap(in, numinputs=0) NxsStringVector &names (NxsStringVector temp)
 {
@@ -38,16 +41,52 @@
     }
 }
 
+%typemap(out) NxsUnsignedSet&
+{
+  NxsUnsignedSet::const_iterator i;
+  int index=0;
+  Py_DECREF($result);
+  $result = PyTuple_New($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      PyTuple_SetItem($result, index++, PyInt_FromLong(*i));
+    }
+}
+
+
+#elif defined(SWIGRUBY)
+
+
+%typemap(in, numinputs=0) NxsStringVector &names (NxsStringVector temp)
+{
+  $1 = &temp;
+}
+
+%typemap(argout) NxsStringVector &names
+{
+  NxsStringVector::const_iterator i;
+  VALUE arr = rb_ary_new2($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      rb_ary_push(arr, rb_str_new2(i->c_str()));
+    }
+  $result = arr;
+}
+
+%typemap(out) NxsUnsignedSet&
+{
+  NxsUnsignedSet::const_iterator i;
+  VALUE arr = rb_ary_new2($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      rb_ary_push(arr, INT2FIX(*i));
+    }
+  $result = arr;
+}
+
+
+#else
+
 #endif
 
 %include nxsassumptionsblock.h
-
-%extend NxsAssumptionsBlock
-{
-  std::string Report()
-    {
-      ostringstream output;
-      $self->Report(output);
-      return output.str();
-    }
-}
