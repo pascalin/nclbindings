@@ -25,6 +25,7 @@
 
 #elif defined(SWIGPYTHON)
 
+
 %typemap(in) istream&
 {
    if (!PyString_Check($input))
@@ -35,8 +36,14 @@
    $1 = new istringstream(string(PyString_AsString($input)));
 }
 
+
 #elif defined(SWIGRUBY)
 
+
+%typemap(in) istream&
+{
+   $1 = new istringstream(string(STR2CSTR($input)));
+}
 
 
 #endif
