@@ -11,23 +11,23 @@ class MyReader < Ncl::NxsReader
   end
 
   def EnteringBlock(blockname)
-    puts 'Reading "#{blockname}" block...'
-    @outf << 'Reading "#{blockname}" block...\n'
+    puts "Reading \"#{blockname}\" block..."
+    @outf.puts "Reading \"#{blockname}\" block...\n"
     true
   end
 
   def SkippingBlock(blockname)
-    puts 'Skipping unknown block ("#{blockname}")...'
-    @outf << 'Skipping unknown block ("#{blockname}")...'
+    puts "Skipping unknown block (#{blockname})..."
+    @outf.puts "Skipping unknown block (#{blockname})..."
     true
   end
 
   def OutputComment(msg)
-    @outf << msg
+    @outf.puts msg
   end
 
   def NexusError(msg, pos, line, col)
-    STDERR << '\nError found at line #{line}, column #{col} (file position #{pos}): #{msg}'
+    STDERR.puts "\nError found at line #{line}, column #{col} (file position #{pos}): #{msg}"
     exit
   end
 
@@ -35,7 +35,7 @@ end
 
 class MyToken < Ncl::NxsToken
   def initialize(is, os)
-    super(is)
+    super(is.read)
     @out = os
   end
 
@@ -56,8 +56,8 @@ def main
   token = MyToken.new(nexus.inf, nexus.outf)
   nexus.Execute(token)
 
-  taxa.Report(nexus.outf)
-  trees.Report(nexus.outf)
+  nexus.outf.puts taxa.Report
+  nexus.outf.puts trees.Report
 end
 
 main()
