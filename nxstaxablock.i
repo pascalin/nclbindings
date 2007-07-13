@@ -20,3 +20,15 @@
 //
 
 %include nxstaxablock.h
+
+%extend NxsTaxaBlock
+{
+  NxsStringVector &GetTaxonLabels()
+    {
+      unsigned int index, num = $self->GetNumTaxonLabels();
+      NxsStringVector * output = new NxsStringVector();
+      for (index=0;index<num;index++)
+	output->push_back($self->GetTaxonLabel(index));
+      return *output;
+    }
+}

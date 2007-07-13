@@ -69,6 +69,18 @@ typedef std::istream istream;
    $result = PyString_FromString($1.c_str());
 }
 
+/* Python typemap for output of NxsStringVector */
+%typemap(out) NxsStringVector&
+{
+  NxsStringVector::const_iterator i;
+  int index=0;
+  $result = PyTuple_New($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      PyTuple_SetItem($result, index++, PyString_FromString(i->c_str()));
+    }
+}
+
 /* Python typemaps for methods that receive an output stream */
 %typemap(in, numinputs=0) std::ostream &out (std::ostringstream temp)
 {
@@ -125,7 +137,19 @@ typedef std::istream istream;
 
 %typemap(out) NxsString
 {
-   $result = rb_str_new2($1.c_str());
+  $result = rb_str_new2($1.c_str());
+}
+
+/* Ruby typemap for output of NxsStringVector */
+%typemap(out) NxsStringVector&
+{
+  NxsStringVector::const_iterator i;
+  VALUE arr = rb_ary_new2($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      rb_ary_push(arr, rb_str_new2(i->c_str()));
+    }
+  $result = arr;
 }
 
 /* Ruby typemaps for methods that receive an output stream */

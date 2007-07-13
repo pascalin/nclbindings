@@ -56,12 +56,11 @@
 %typemap(argout) NxsUnsignedSet&
 {
   NxsUnsignedSet::const_iterator i;
-  VALUE arr = rb_ary_new2($1->size());
+  VALUE $result = rb_ary_new2($1->size());
   for (i=$1->begin();i!=$1->end();i++)
     {
-      rb_ary_push(arr, INT2FIX(*i));
+      rb_ary_push($result, INT2FIX(*i));
     }
-  $result = arr;
 }
 
 
