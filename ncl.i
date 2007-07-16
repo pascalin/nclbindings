@@ -122,18 +122,20 @@ typedef std::istream istream;
 
 #elif defined(SWIGRUBY) /* Ruby customizations */
 
+/* Sets SWIG to not warn when renaming constants according to Ruby convention */
+#pragma SWIG nowarn=801
 
-/* Ruby typemaps for input/output of NxsString data*/
+/* Ruby typemaps for input/output of NxsString data */
 %typemap(in) NxsString
 {
    $1.clear();
    $1.append(STR2CSTR($input));
 }
 
-// %typemap(typecheck) NxsString
-// {
-//   $1 = PyString_Check($input)? 1:0;
-// }
+%typemap(typecheck) NxsString
+{
+  $1 = (TYPE($input) == T_STRING)? 1:0;
+}
 
 %typemap(out) NxsString
 {
@@ -176,45 +178,46 @@ typedef std::istream istream;
    $result.append(STR2CSTR($1));
 }
 
-// %predicate *::Abbreviation;
-// %predicate *::AtEOF;
-// %predicate *::AtEOL;
-// %predicate *::Begins;
-// %predicate *::BlockListEmpty;
-// %predicate *::EnteringBlock;
-// %predicate *::Equals;
-// %predicate *::GetActiveCharArray;
-// %predicate *::GetActiveTaxonArray;
-// %predicate *::IsActiveChar;
-// %predicate *::IsActiveTaxon;
-// %predicate *::IsAlreadyDefined;
-// %predicate *::IsDefaultTree;
-// %predicate *::IsDeleted;
-// %predicate *::IsDiagonal;
-// %predicate *::IsEliminated;
-// %predicate *::IsEmpty;
-// %predicate *::IsEnabled;
-// %predicate *::IsExcluded;
-// %predicate *::IsGapState;
-// %predicate *::IsInterleave;
-// %predicate *::IsLabels;
-// %predicate *::IsLowerTriangular;
-// %predicate *::IsMissing;
-// %predicate *::IsMissingState;
-// %predicate *::IsPlusMinusToken;
-// %predicate *::IsPolymorphic;
-// %predicate *::IsPunctuationToken;
-// %predicate *::IsRectangular;
-// %predicate *::IsRespectCase;
-// %predicate *::IsRootedTree;
-// %predicate *::IsTokens;
-// %predicate *::IsTranspose;
-// %predicate *::IsUpperTriangular;
-// %predicate *::IsUserSupplied;
-// %predicate *::IsWhitespaceToken;
-// %predicate *::NeedsQuotes;
-// %predicate *::Run;
-// %predicate *::StoppedOn;
+/* Defining NCL methods that return a bool value as Ruby predicate methods */
+%predicate *::Abbreviation;
+%predicate *::AtEOF;
+%predicate *::AtEOL;
+%predicate *::Begins;
+%predicate *::BlockListEmpty;
+%predicate *::EnteringBlock;
+%predicate *::Equals;
+%predicate *::GetActiveCharArray;
+%predicate *::GetActiveTaxonArray;
+%predicate *::IsActiveChar;
+%predicate *::IsActiveTaxon;
+%predicate *::IsAlreadyDefined;
+%predicate *::IsDefaultTree;
+%predicate *::IsDeleted;
+%predicate *::IsDiagonal;
+%predicate *::IsEliminated;
+%predicate *::IsEmpty;
+%predicate *::IsEnabled;
+%predicate *::IsExcluded;
+%predicate *::IsGapState;
+%predicate *::IsInterleave;
+%predicate *::IsLabels;
+%predicate *::IsLowerTriangular;
+%predicate *::IsMissing;
+%predicate *::IsMissingState;
+%predicate *::IsPlusMinusToken;
+%predicate *::IsPolymorphic;
+%predicate *::IsPunctuationToken;
+%predicate *::IsRectangular;
+%predicate *::IsRespectCase;
+%predicate *::IsRootedTree;
+%predicate *::IsTokens;
+%predicate *::IsTranspose;
+%predicate *::IsUpperTriangular;
+%predicate *::IsUserSupplied;
+%predicate *::IsWhitespaceToken;
+%predicate *::NeedsQuotes;
+%predicate *::Run;
+%predicate *::StoppedOn;
 
 
 #else
