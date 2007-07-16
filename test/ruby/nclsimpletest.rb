@@ -34,6 +34,7 @@ class MyReader < Ncl::NxsReader
 end
 
 class MyToken < Ncl::NxsToken
+
   def initialize(is, os)
     super(is.read)
     @out = os
