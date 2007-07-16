@@ -70,7 +70,7 @@ class MyNexusFileReader(ncl.NxsReader):
     def DebugReportBlock(self, nexusBlock):
         if not nexusBlock.IsEmpty():
             self.outf.write("\n********** Contents of the %s block **********\n" % nexusBlock.GetID())
-            self.outf.write(nexusBlock.Report)
+            self.outf.write(nexusBlock.Report())
 
     def	NexusError(self, msg, pos, line, col):
         sys.stderr.write('\nError found at line %d, column %d (file position %d): %s' %
