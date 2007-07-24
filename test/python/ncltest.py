@@ -73,13 +73,13 @@ class MyNexusFileReader(ncl.NxsReader):
             self.outf.write(nexusBlock.Report())
 
     def	NexusError(self, msg, pos, line, col):
-        sys.stderr.write('\nError found at line %d, column %d (file position %d): %s' %
+        sys.stderr.write("\nError found at line %d, column %d (file position %d): %s\n" %
                          (line, col, pos, msg))
-        self.out.write('\nError found at line %d, column %d (file position %d): %s' %
+        self.outf.write("\nError found at line %d, column %d (file position %d): %s\n" %
                        (line, col, pos, msg))
         sys.stderr.write("Press return to quit...\n")
         raw_input()
-
+        sys.exit(0)
 
 class MyCharactersBlock(ncl.NxsCharactersBlock):
     '''This derived version of NxsCharactersBlock is necessary in
