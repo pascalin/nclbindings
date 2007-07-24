@@ -42,6 +42,15 @@
 typedef std::string string;
 typedef std::ostream ostream;
 typedef std::istream istream;
+typedef long file_pos;
+
+/* Working around NCL file_pos conditional typedef */
+// #if defined(__MWERKS__) || defined(__DECCXX) || defined(_MSC_VER)
+// 	typedef long		file_pos;
+// #else
+// 	typedef streampos	file_pos;
+// #endif
+
 
 /* Enabling default typemaps for std::strings */
 %include std_string.i
@@ -101,6 +110,18 @@ typedef std::istream istream;
 }
 
 %typemap(directorout) NxsString
+{
+   $result.clear();
+   $result.append(PyString_AsString($1));
+}
+
+/* Python input/output director typemaps for NxsString& data  */
+%typemap(directorin) NxsString&
+{
+   $input = PyString_FromString($1_name.c_str());
+}
+
+%typemap(directorout) NxsString&
 {
    $result.clear();
    $result.append(PyString_AsString($1));
@@ -173,6 +194,18 @@ typedef std::istream istream;
 }
 
 %typemap(directorout) NxsString
+{
+   $result.clear();
+   $result.append(STR2CSTR($1));
+}
+
+/* Ruby input/output director typemaps for NxsString& data  */
+%typemap(directorin) NxsString&
+{
+   $input = rb_str_new2($1_name.c_str());
+}
+
+%typemap(directorout) NxsString&
 {
    $result.clear();
    $result.append(STR2CSTR($1));
