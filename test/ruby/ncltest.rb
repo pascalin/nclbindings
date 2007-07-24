@@ -80,11 +80,11 @@ class MyNexusFileReader < Ncl::NxsReader
     end
   end
 
-  def	NexusError(msg, pos, line, col)
+  def NexusError(msg, pos, line, col)
     STDERR.puts "\nError found at line #{line}, column #{col} (file position #{pos}): #{msg}"
-    @out.puts "\nError found at line #{line}, column #{col} (file position #{pos}): #{msg}"
+    @outf.puts "\nError found at line #{line}, column #{col} (file position #{pos}): #{msg}"
     STDERR.puts "Press return to quit..."
-    #raw_input()
+    gets
   end
 end
 
@@ -160,7 +160,7 @@ def main()
     outf.close
     STDERR.puts "Error: specified input file (#{infname}) does not exist."
     STDERR.puts "Press return to quit..."
-    #raw_input()
+    gets
     exit
   end
 
@@ -215,9 +215,8 @@ def main()
     nexus.outf.puts
   end
 
-#   sys.stderr.write("\n")
-#   sys.stderr.write("Press return to quit...\n")
-#   raw_input()
+  STDERR.puts "\nPress return to quit..."
+  gets
 
   return 0
 
