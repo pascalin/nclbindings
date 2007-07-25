@@ -55,6 +55,10 @@ typedef long file_pos;
 /* Enabling default typemaps for std::strings */
 %include std_string.i
 
+/* Ignored members of NCL */
+%ignore NxsBlock::CloneBlock;
+%ignore	NxsCharactersBlock::GetStateSymbolIndex;
+
 /* Conditional processing based on language of wrappers being produced */
 #if defined(SWIGPERL) /* Perl customizations */
 
@@ -90,6 +94,17 @@ typedef long file_pos;
     }
 }
 
+/* Python typemap for methods that receive an input stream */
+%typemap(in) istream&
+{
+   if (!PyString_Check($input))
+     {
+       PyErr_SetString(PyExc_TypeError, "not a string");
+       return NULL;
+     }
+   $1 = new istringstream(string(PyString_AsString($input)));
+}
+
 /* Python typemaps for methods that receive an output stream */
 %typemap(in, numinputs=0) std::ostream &out (std::ostringstream temp)
 {
@@ -101,6 +116,55 @@ typedef long file_pos;
   std::ostringstream *output = static_cast<std::ostringstream *> ($1);
   Py_DECREF($result);
   $result = PyString_FromString(output->str().c_str());
+}
+
+/* Python argout typemaps for NxsStringVector& */
+%typemap(in, numinputs=0) NxsStringVector &names (NxsStringVector temp)
+{
+  $1 = &temp;
+}
+
+%typemap(argout) NxsStringVector &names
+{
+  NxsStringVector::const_iterator i;
+  int index=0;
+  Py_DECREF($result);
+  $result = PyTuple_New($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      PyTuple_SetItem($result, index++, PyString_FromString(i->c_str()));
+    }
+}
+
+/* Python argout typemaps for NxsUnsignedSet& */
+%typemap(in, numinputs=0) NxsUnsignedSet& (NxsUnsignedSet temp)
+{
+  $1 = &temp;
+}
+
+%typemap(argout) NxsUnsignedSet&
+{
+  NxsUnsignedSet::const_iterator i;
+  int index=0;
+  Py_DECREF($result);
+  $result = PyTuple_New($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      PyTuple_SetItem($result, index++, PyInt_FromLong(*i));
+    }
+}
+
+/* Python out typemap for NxsUnsignedSet& */
+%typemap(out) NxsUnsignedSet&
+{
+  NxsUnsignedSet::const_iterator i;
+  int index=0;
+  Py_DECREF($result);
+  $result = PyTuple_New($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      PyTuple_SetItem($result, index++, PyInt_FromLong(*i));
+    }
 }
 
 /* Python input/output director typemaps for NxsString data  */
@@ -175,6 +239,12 @@ typedef long file_pos;
   $result = arr;
 }
 
+/* Ruby typemap for methods that receive an input stream */
+%typemap(in) istream&
+{
+   $1 = new istringstream(string(STR2CSTR($input)));
+}
+
 /* Ruby typemaps for methods that receive an output stream */
 %typemap(in, numinputs=0) std::ostream &out (std::ostringstream temp)
 {
@@ -185,6 +255,51 @@ typedef long file_pos;
 {
   std::ostringstream *output = static_cast<std::ostringstream *> ($1);
   $result = rb_str_new2(output->str().c_str());
+}
+
+/* Ruby argout typemap for NxsStringVector& */
+%typemap(in, numinputs=0) NxsStringVector &names (NxsStringVector temp)
+{
+  $1 = &temp;
+}
+
+%typemap(argout) NxsStringVector &names
+{
+  NxsStringVector::const_iterator i;
+  VALUE arr = rb_ary_new2($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      rb_ary_push(arr, rb_str_new2(i->c_str()));
+    }
+  $result = arr;
+}
+
+/* Ruby argout typemap for NxsUnsignedSet& */
+%typemap(in, numinputs=0) NxsUnsignedSet& (NxsUnsignedSet temp)
+{
+  $1 = &temp;
+}
+
+%typemap(argout) NxsUnsignedSet&
+{
+  NxsUnsignedSet::const_iterator i;
+  VALUE $result = rb_ary_new2($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      rb_ary_push($result, INT2FIX(*i));
+    }
+}
+
+/* Ruby out typemap for NxsUnsignedSet& */
+%typemap(out) NxsUnsignedSet&
+{
+  NxsUnsignedSet::const_iterator i;
+  VALUE arr = rb_ary_new2($1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      rb_ary_push(arr, INT2FIX(*i));
+    }
+  $result = arr;
 }
 
 /* Ruby input/output director typemaps for NxsString data  */
@@ -262,18 +377,31 @@ typedef long file_pos;
 #endif
 
 
-%include nxstoken.i
-%include nxsblock.i
-%include nxsreader.i
-%include nxstaxablock.i
-%include nxstreesblock.i
-%include nxscharactersblock.i
-%include nxsassumptionsblock.i
-%include nxsdatablock.i
+%include nxstoken.h
+%include nxsblock.h
+%include nxsreader.h
+%include nxstaxablock.h
+%include nxstreesblock.h
+%include nxscharactersblock.h
+%include nxsassumptionsblock.h
+%include nxsdatablock.h
 %include nxsdistancesblock.h
-%include nxssetreader.i
-//%include nxsstring.i
+%include nxssetreader.h
+//%include nxsstring.h
 //%include nxsdistancedatum.h
 //%include nxsdiscretedatum.h
 //%include nxsdiscretematrix.h
 //%include nxsunalignedblock.h
+
+/* SWIG extensions to NCL Classes */
+%extend NxsTaxaBlock
+{
+  NxsStringVector &GetTaxonLabels()
+    {
+      unsigned int index, num = $self->GetNumTaxonLabels();
+      NxsStringVector * output = new NxsStringVector();
+      for (index=0;index<num;index++)
+	output->push_back($self->GetTaxonLabel(index));
+      return *output;
+    }
+}
