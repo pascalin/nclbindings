@@ -38,7 +38,7 @@
     }
 }
 
-/* Preventing synonimous employment of certain STL classes */
+/* Allowing synonymous employment of certain STL classes */
 typedef std::string string;
 typedef std::ostream ostream;
 typedef std::istream istream;
@@ -61,6 +61,134 @@ typedef long file_pos;
 
 /* Conditional processing based on language of wrappers being produced */
 #if defined(SWIGPERL) /* Perl customizations */
+
+
+/* Perl typemaps for input/output of NxsString data*/
+%typemap(in) NxsString
+{
+   $1.clear();
+   $1.append(SvPV($input, PL_na));
+}
+
+%typemap(typecheck) NxsString
+{
+  $1 = SvPOK($input)? 1:0;
+}
+
+%typemap(out) NxsString
+{
+   $result = newSVpv($1.c_str(), 0);
+}
+
+/* Perl typemap for output of NxsStringVector */
+%typemap(out) NxsStringVector&
+{
+  NxsStringVector::const_iterator i;
+  $result = newRV_inc((SV*) newAV());
+  av_extend((AV*) SvRV($result), $1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      av_push((AV*) SvRV($result), newSVpv(i->c_str(), 0));
+    }
+}
+
+/* Perl typemap for methods that receive an input stream */
+%typemap(in) istream&
+{
+//    if (!PyString_Check($input))
+//      {
+//        PyErr_SetString(PyExc_TypeError, "not a string");
+//        return NULL;
+//      }
+   $1 = new istringstream(string(SvPV($input, PL_na)));
+}
+
+/* Perl typemaps for methods that receive an output stream */
+%typemap(in, numinputs=0) std::ostream &out (std::ostringstream temp)
+{
+  $1 = &temp;
+}
+
+%typemap(argout) std::ostream &out
+{
+  std::ostringstream *output = static_cast<std::ostringstream *> ($1);
+  //Py_DECREF($result);
+  $result = newSVpv(output->str().c_str(), 0);
+}
+
+/* Perl argout typemaps for NxsStringVector& */
+%typemap(in, numinputs=0) NxsStringVector &names (NxsStringVector temp)
+{
+  $1 = &temp;
+}
+
+%typemap(argout) NxsStringVector &names
+{
+  NxsStringVector::const_iterator i;
+  //Py_DECREF($result);
+  $result = newRV_inc((SV*) newAV());
+  av_extend((AV*) SvRV($result), $1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      av_push((AV*) SvRV($result), newSVpv(i->c_str(), 0));
+    }
+}
+
+/* Perl argout typemaps for NxsUnsignedSet& */
+%typemap(in, numinputs=0) NxsUnsignedSet& (NxsUnsignedSet temp)
+{
+  $1 = &temp;
+}
+
+%typemap(argout) NxsUnsignedSet&
+{
+  NxsUnsignedSet::const_iterator i;
+  //Py_DECREF($result);
+  $result = newRV_inc((SV*) newAV());
+  av_extend((AV*) SvRV($result), $1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      av_push((AV*) SvRV($result), newSVnv(*i));
+    }
+}
+
+/* Perl out typemap for NxsUnsignedSet& */
+%typemap(out) NxsUnsignedSet&
+{
+  NxsUnsignedSet::const_iterator i;
+  //Py_DECREF($result);
+  $result = newRV_inc((SV*) newAV());
+  av_extend((AV*) SvRV($result), $1->size());
+  for (i=$1->begin();i!=$1->end();i++)
+    {
+      av_push((AV*) SvRV($result), newSVnv(*i));
+    }
+}
+
+/* Perl input/output director typemaps for NxsString data  */
+%typemap(directorin) NxsString
+{
+   $input = newSVpv($1_name.c_str(), 0);
+}
+
+%typemap(directorout) NxsString
+{
+   $result.clear();
+   $result.append(SvPV($1, PL_na));
+}
+
+/* Perl input/output director typemaps for NxsString& data  */
+%typemap(directorin) NxsString&
+{
+  $input = newSVpv($1_name.c_str(), 0);
+}
+
+%typemap(directorout) NxsString&
+{
+   $result.clear();
+   $result.append(SvPV($1, PL_na));
+}
+
 
 #elif defined(SWIGPYTHON) /* Python customizations */
 
