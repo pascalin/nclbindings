@@ -1,0 +1,15 @@
+NCL Bindings 1.0
+(c) 2007 David Suarez Pascal <david.suarez@yahoo.com>
+
+
+TODO
+
+* Wrapping of NxsEmptyBlock and NxsUnalignedBlock (it seems to have
+with problems in NCL).
+
+* Enhance exception wrapping (exceptions must be adequately generated
+and communicated both to and from C++ and scripting language.
+
+* Review memory management inside typemap code.
+
+* Implement adequate distribution packages for each language.

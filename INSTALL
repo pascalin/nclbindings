@@ -1,0 +1,34 @@
+NCL Bindings 1.0
+(c) 2007 David Suarez Pascal <david.suarez@yahoo.com>
+
+
+INSTALL
+
+ NCL Bindings building require some additional tools and components:
+
+ * SWIG (at least version 1.3)
+ * CMake (at least version 2.0)
+ * NCL (at least version 2.0 sourcecode)
+
+ To build NCL Bindings you need to employ CMake to generate the
+adequate building instructions (v.gr. Makefiles). The instructions
+produced by CMake will target the building of bindings for the
+language indicated by the build directory name. If CMake detects the
+build directory (which can be it from which CMake was invoked or that
+indicated on the CMake options) has the name python, it will produce
+instructions for building of the Python version of bindings.
+
+ Once you run sucessfully CMake, the proper building instructions for
+your platform will be inside the build directory. Then you just need
+to employ this building instructions for compiling the bindings. If you
+get a Makefile, you can use make, and if you get a Visual Studio
+project you can employ VS to make the respective.
+
+ The building of Perl, Python and Ruby bindings will produce one or
+two files with the following names: ncl.pm and ncl.so (Perl), ncl.py
+and _ncl.so (Python), and ncl.so (Ruby).
+
+ Before you can employ NCL Bindings you need to move or copy the
+files produced to the respective place for each language so the
+bindings can be seen and imported from programs. Please consult the
+documentation of each language to know the right system path.
