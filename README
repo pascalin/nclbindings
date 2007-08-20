@@ -24,7 +24,7 @@ information from the TAXA block in a NEXUS file and this info can be
 employed by other block processors.
 
  All NCL classes are well documented in the NCL source. Small changes
-to the specification have been made. Only API changes are docummented
+to the specification have been made. Only API changes are documented
 in this file.
 
 
@@ -37,7 +37,7 @@ NCL wrapped classes
 
   * NxsToken
     NxsToken constructor receives the a string containing the
-    NEXUS data instead of just a filename.
+    NEXUS data instead of just a file name.
 
   * NxsBlock
     Report method in NxsBlock and its derived classes return a string
@@ -58,7 +58,7 @@ NCL wrapped classes
 intend to provide the most natural translation between NCL classes and
 each language particulars. An example of this is the capitalization of
 constant elements in NCL made automatically by SWIG when generating
-Ruby wrappers. The same case is with NCL methods returning a boolean
+Ruby wrappers. The same case is with NCL methods returning a Boolean
 value, whose names have been modified by appending a question sign (?)
 as with Ncl::NxsBlock.IsEmpty?
 
