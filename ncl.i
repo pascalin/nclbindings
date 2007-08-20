@@ -522,6 +522,7 @@ typedef long file_pos;
 //%include nxsunalignedblock.h
 
 /* SWIG extensions to NCL Classes */
+#if SWIG_VERSION >= 0x010311
 %extend NxsTaxaBlock
 {
   NxsStringVector &GetTaxonLabels()
@@ -533,3 +534,4 @@ typedef long file_pos;
       return *output;
     }
 }
+#endif
