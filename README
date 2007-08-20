@@ -1,0 +1,93 @@
+NCL Bindings 1.0
+(c) 2007 David Suarez Pascal <david.suarez@yahoo.com>
+
+
+README
+
+ NCL Bindings provides a set of wrappers for the classes in the NEXUS
+Class Library (http://sourceforge.net/projects/ncl/). These wrappers
+were created employing SWIG (http://www.swig.org).
+
+ With NCL Bindings it is very simple to process NEXUS data from
+programs written in the languages Perl, Python and Ruby. You just need
+to import/include the ncl package from your program and use the
+classes provided by NCL or (with some restrictions) create your own
+subclasses.
+
+ Basically, NCL use requires two core classes: NxsReader and
+NxsToken. NxsReader in conjunction with NxsToken can parse a NEXUS
+file and process each type of NEXUS block if an adequate processor has
+been registered with NxsReader.
+
+ A common block processor is NxsTaxa. It extracts taxonomic
+information from the TAXA block in a NEXUS file and this info can be
+employed by other block processors.
+
+ All NCL classes are well documented in the NCL source. Small changes
+to the specification have been made. Only API changes are docummented
+in this file.
+
+
+NCL wrapped classes
+
+ Core classes
+
+  * NxsReader
+    No significant changes were made.
+
+  * NxsToken
+    NxsToken constructor receives the a string containing the
+    NEXUS data instead of just a filename.
+
+  * NxsBlock
+    Report method in NxsBlock and its derived classes return a string
+    instead of receiving a writable object.
+
+ Derived classes
+
+  * NxsAssumptionsBlock
+  * NxsCharactersBlock
+  * NxsDataBlock
+  * NxsDistancesBlock
+  * NxsTaxaBlock
+  * NxsTreesBlock
+  * NxsEmptyBlock
+  * NxsUnalignedBlock
+
+ The remaining changes will pass, with luck, unnoticed since these
+intend to provide the most natural translation between NCL classes and
+each language particulars. An example of this is the capitalization of
+constant elements in NCL made automatically by SWIG when generating
+Ruby wrappers. The same case is with NCL methods returning a boolean
+value, whose names have been modified by appending a question sign (?)
+as with Ncl::NxsBlock.IsEmpty?
+
+
+Installation
+
+ Please check the INSTALL file included with NCL Bindings.
+
+
+Use
+
+ Once installed, you can employ NCL Bindings from your scripting
+language of choice calling one of the following instructions:
+
+ Perl
+
+  use ncl;
+
+ Python
+
+  import ncl
+
+ Ruby
+
+  require 'ncl';
+
+
+About NCL Bindings
+
+ Development of NCL Bindings was funded by Google through its Summer
+of Code 2007 and occurred under mentorship of Mark Holder
+(http://www.csit.fsu.edu/~mholder/), one of the developers of NCL.
